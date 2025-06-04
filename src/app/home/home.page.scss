@@ -1,27 +1,173 @@
-#container {
+/* ---------- COLORES Y ESTILOS DE LA APLICACION ---------- */
+
+:root {
+  --app-bg: #ffffff; // fondo principal
+  --card-bg: #242424; ; // fondo de tarjetas
+  --text-main: #E0E0E0; // texto principal
+  --text-sub: #0379da; // texto secundario y placeholders
+  --accent: #03DAC6; // color de acento
+  --shadow-color: rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- HEADER DE LA APLICACION ---------- */
+
+.header {
+  padding-left: 100px;
+}
+
+/* ---------- CONTENIDO DE LA APLICACION ---------- */
+
+.home-content {
+  --background: var(--app-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+/* ---------- CUERPO DE LA APLICACION ---------- */
+
+.home-header {
   text-align: center;
+  margin-bottom: 50px;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  h1 {
+      margin-top: 50px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--text-main);
+  }
+
+  h2 {
+      font-size: 1.0rem;
+      font-weight: bold;
+      color: var(--text-sub);
+  }
+
+  h3 {
+    font-size: 1.0rem;
+    font-weight: bold;
+    color: var(--text-sub);
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+/* ---------- MESAS ---------- */
+.mesa-card {
+  width: 65%;
+  padding-top: 10%;
+  position: relative;
+  margin: 20px auto;
+  border-radius: 10px;
+  background: var(--ion-color-success);
+  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  cursor: pointer;
+  transition: transform .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  flex-direction: column;
+  gap: 4px;  
+  
+
+  &.libre { 
+    background: var(--ion-color-success);
+  }
+
+  &.ocupada { 
+    background: var(--ion-color-danger);
+  }
+  
+  &.reservada { 
+    background: var(--ion-color-warning);
+  }
+
+  &:active {
+    transform: scale(.96);
+  }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+/* tamaño y color del icono */
+.mesa-icon {
+  font-size: 1.8rem;    /* ajusta a tu gusto */
+  color: #fff;          /* blanco */
 }
 
-#container a {
-  text-decoration: none;
+/* número grande */
+.mesa-num {
+  font-size: 1.4rem;
+}
+
+/* ---------- CARTA DE DATOS QUE INGRESA EL USUARIO ---------- */
+
+.home-card {
+  width: 100%;
+  max-width: 340px;
+  border: 2px solid var(--text-sub);
+  border-radius: 16px;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 12px var(--shadow-color);
+
+  h3 {
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--text-main);
+  }
+
+  form {
+    padding: 24px 16px;
+
+    .text-label {
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+  }
+}
+
+/* Inputs con linea completa y espacio entre ellos */
+ion-item {
+  --background: transparent;
+  margin-bottom: 10px;
+  --color: var(--text-main);
+  --placeholder-color: var(--text-sub);
+}
+
+ion-input {
+  color: var(--text-main);
+}
+
+ion-label {
+  color: var(--text-sub);
+}
+
+/* ---------- ANIMACION DEL BOTON LIMPIAR ---------- */
+@keyframes slide-right {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(100px); }
+  100% { transform: translateX(0); }
+}
+
+.slide-animation {
+  animation: slide-right 1s ease-in-out;
+}
+
+/* ---------- MENU DE SELECCION DE FECHAS ---------- */
+
+::ng-deep .cdk-overlay-pane .mat-datepicker-content .mat-calendar {
+  background-color: #242424 !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .cdk-overlay-pane .mat-calendar-body-cell {
+  background-color: #242424 !important;
+}
+
+/* ---------- FOOTER DE LA APLICACION ---------- */
+
+.footer {
+  text-align: center;
+  color: var(--text-sub);
 }

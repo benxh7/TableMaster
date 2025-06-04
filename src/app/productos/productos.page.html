@@ -1,0 +1,51 @@
+<!-- Header de la Aplicación -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <!-- Botón hamburguesa -->
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="header">Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Contenido de la aplicacion -->
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item-sliding *ngFor="let p of (productos$ | async)">
+      <ion-item detail="false">
+        <ion-label>
+          <h2>{{ p.nombre }}</h2>
+          <p>Precio: ${{ p.precio | number:'1.0-0' }}</p>
+          <p>
+            Stock:
+            <ng-container *ngIf="!p.ilimitado; else inf"> {{ p.stock }} </ng-container>
+            <ng-template #inf>∞</ng-template>
+          </p>
+        </ion-label>
+        <!-- botón editar -->
+        <ion-button slot="end" fill="clear" (click)="edit(p)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="delete(p)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- FAB nuevo -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- Footer de la Aplicación -->
+<ion-footer class="footer" slot="fixed">
+  <ion-toolbar>
+    <ion-title>Copyright © TableMaster 2025.</ion-title>
+  </ion-toolbar>
+</ion-footer>
