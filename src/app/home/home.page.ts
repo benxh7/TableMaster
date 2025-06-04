@@ -59,7 +59,6 @@ export class HomePage {
     await s.present();
   }
 
-  /* ★ NUEVO: opciones para mesa OCUPADA ★ */
   private async sheetParaOcupada(mesa: Mesa) {
     const clientes = mesa.ocupantes;
     const s = await this.sheetCtrl.create({
@@ -69,7 +68,12 @@ export class HomePage {
         {
           text: 'Ver pedido',
           icon: 'receipt',
-          handler: () => console.log('Abrir pedido de la mesa', mesa.id),
+          handler: async () => {
+            await s.dismiss();
+            this.router.navigate(['/pedido'], {
+              queryParams: { mesaId: mesa.id }
+            });
+          },
         },
         {
           text: 'Agregar Productos',

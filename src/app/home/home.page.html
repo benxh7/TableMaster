@@ -14,14 +14,10 @@
   <ion-grid>
     <ion-row>
       <ion-col size="4" size-sm="3" *ngFor="let mesa of (mesas$ | async)">
-        <div
-  class="mesa-card"
-  [ngClass]="mesa.estado"
-  (click)="abrirMesa(mesa)"
->
-  <ion-icon name="restaurant" class="mesa-icon"></ion-icon>
-  <span class="mesa-num">{{ mesa.numero }}</span>
-</div>
+        <div  #mesaCard class="mesa-card" [ngClass]="mesa.estado" [attr.data-id]="mesa.id" (click)="abrirMesa(mesa)">
+          <ion-icon name="restaurant" class="mesa-icon"></ion-icon>
+          <span class="mesa-num">{{ mesa.numero }}</span>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -23,24 +23,41 @@
             <ng-template #inf>∞</ng-template>
           </p>
         </ion-label>
+
+        <ion-button *ngIf="mesaId"
+            slot="end"
+            fill="clear"
+            size="small"
+            (click)="onSelect(p); $event.stopPropagation();">
+          <ion-icon name="add-circle"></ion-icon>
+        </ion-button>
+
         <!-- botón editar -->
-        <ion-button slot="end" fill="clear" (click)="edit(p)">
+        <ion-button slot="end" fill="clear" (click)="editar(p)">
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
       </ion-item>
 
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="delete(p)">
+        <ion-item-option color="danger" (click)="eliminar(p)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
 
-  <!-- FAB nuevo -->
+  <!-- Boton para agregar un nuevo producto -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
+    <ion-fab-button (click)="agregar()"><ion-icon name="add"></ion-icon></ion-fab-button>
   </ion-fab>
+
+  <!-- Boton para volver a el menu de la mesa -->
+  <ion-fab *ngIf="mesaId" vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button color="medium" (click)="volverAMesa()">
+      <ion-icon name="return-down-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
 </ion-content>
 
 <!-- Footer de la Aplicación -->

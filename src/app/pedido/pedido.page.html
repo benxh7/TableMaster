@@ -1,0 +1,53 @@
+<!-- Header de la Aplicación -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <!-- Botón hamburguesa -->
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="header">Mesa {{ mesa.numero }} – Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Contenido de la aplicacion -->
+<ion-content class="ion-padding">
+  <ion-list *ngIf="mesa.items.length; else vacio">
+    <ion-item *ngFor="let it of mesa.items">
+      <ion-label>
+        <h2>{{ it.producto.nombre }}</h2>
+        <p>{{ it.cantidad }} × ${{ it.producto.precio | number:'1.0-0' }}</p>
+      </ion-label>
+      <ion-note slot="end">
+        ${{ subtotal(it) | number:'1.0-0' }}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #vacio>
+    <p class="ion-text-center ion-margin-top">Aún no hay productos.</p>
+  </ng-template>
+
+  <ion-card>
+    <ion-card-content class="ion-text-end">
+      <h2>Total: ${{ total | number:'1.0-0' }}</h2>
+      <h3 class="ion-margin-top">
+        Total + 10%: ${{ totalConPropina | number:'1.0-0' }}
+      </h3>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Boton para volver a el menu de la mesa -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button color="medium" (click)="volver()">
+      <ion-icon name="return-down-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+<!-- Footer de la Aplicación -->
+<ion-footer class="footer" slot="fixed">
+  <ion-toolbar>
+    <ion-title>Copyright © TableMaster 2025.</ion-title>
+  </ion-toolbar>
+</ion-footer>
