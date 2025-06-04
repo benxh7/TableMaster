@@ -1,0 +1,7 @@
+{
+  "name": "TableMaster",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
