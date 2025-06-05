@@ -32,6 +32,8 @@ export interface Mesa {
   ocupantes: number;
   estado: 'libre' | 'reservada' | 'ocupada';
   items: PedidoItem[];
+  garzon?: string;
+
 }
 
 @Injectable({ providedIn: 'root' })
@@ -44,14 +46,26 @@ export class MesaService {
    */
   getMesas() { return this.mesas$.asObservable(); }
   getMesa(id: string) { return this.mesas$.value.find(m => m.id === id)!; }
+  addMesa(capacidad = 6) {
+    const lista = this.mesas$.value;
+    const nueva: Mesa = {
+      id: crypto.randomUUID(),
+      numero: lista.length + 1,
+      capacidad,
+      ocupantes: 0,
+      estado: 'libre',
+      items: [],
+    };
+    this.mesas$.next([...lista, nueva]);
+  }
 
   /**
    * Con esto gestionamos el estado de las mesas
    * para saber si estan reservadas, ocupadas o libres.
    */
   reservar(id: string) { this.actualizar(id, { estado: 'reservada' }); }
-  ocupar(id: string, personas: number) {
-    this.actualizar(id, { estado: 'ocupada', ocupantes: personas });
+  ocupar(id: string, personas: number, garzon?: string) {
+    this.actualizar(id, { estado: 'ocupada', ocupantes: personas, garzon });
   }
   liberar(id: string) { this.actualizar(id, { estado: 'libre', ocupantes: 0 }); }
 

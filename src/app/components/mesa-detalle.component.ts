@@ -1,12 +1,13 @@
 import { Component, inject, signal, Input } from '@angular/core';
 import { IonicModule, ModalController, ToastController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';  
 import { CommonModule } from '@angular/common';
 import { Mesa, MesaService } from '../services/mesa.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mesa-detail',
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, FormsModule],
   template: `
     <ion-header translucent>
       <ion-toolbar>
@@ -47,40 +48,70 @@ import { Router } from '@angular/router';
       </ion-grid>
 
       <!-- Liberar / Reservar siguen igual -->
-      <ion-button
-        expand="block"
-        color="warning"
-        *ngIf="mesa.estado === 'libre'"
-        (click)="reservar()"
-      >
+      <ion-button expand="block" color="warning" *ngIf="mesa.estado === 'libre'" (click)="reservar()">
         Reservar mesa
       </ion-button>
 
-      <ion-button
-        expand="block"
-        color="medium"
-        *ngIf="mesa.estado !== 'libre'"
-        (click)="liberar()"
-      >
+      <ion-button expand="block" color="medium" *ngIf="mesa.estado !== 'libre'" (click)="liberar()">
         Liberar mesa
       </ion-button>
+
+
+      <!-- campo nuevo, debajo del selector de personas -->
+      <div class="garzon-wrapper">
+        <ion-item lines="full">
+          <ion-label position="stacked" class="garzon-label">
+            Nombre del garzón (opcional)
+          </ion-label>
+          <ion-input
+            [(ngModel)]="garzon"
+            placeholder="Nombre"
+            class="garzon-input">
+          </ion-input>
+        </ion-item>
+      </div>
     </ion-content>
   `,
   styles: [`
     .personas-box{
-      display:flex;justify-content:center;align-items:center;gap:24px;margin:32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      margin: 32px 0;
     }
-    h1{margin:0;font-size:3rem;}
+      
+    h1 {
+      margin:0;
+      font-size:
+      3rem;
+    }
+
+    .garzon-wrapper {
+      margin-top: 30px;
+    }
+      
+    .garzon-label {
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+    }
+      
+    .garzon-input {
+      --min-height: 50px;
+      font-size: 1rem;
+      color: #fff;
+    }
   `]
 })
 export class MesaDetailComponent {
   private modalCtrl = inject(ModalController);
-  private mesaSrv   = inject(MesaService);
-  private router    = inject(Router);
+  private mesaSrv = inject(MesaService);
+  private router = inject(Router);
   private toastCtrl = inject(ToastController);
 
   @Input() mesa!: Mesa;
   personas = signal(1);
+  garzon = '';
 
   /* Helpers */
   close() { this.modalCtrl.dismiss(); }
@@ -89,14 +120,14 @@ export class MesaDetailComponent {
   /* ───────── ACCIONES ───────── */
   ocuparSolo(){
     if (this.mesa.estado !== 'ocupada') {
-      this.mesaSrv.ocupar(this.mesa.id, this.personas());
+      this.mesaSrv.ocupar(this.mesa.id, this.personas(), this.garzon.trim() || undefined);
     }
     this.modalCtrl.dismiss();
   }
 
   ocuparYAgregar(){
     if (this.mesa.estado !== 'ocupada') {
-      this.mesaSrv.ocupar(this.mesa.id, this.personas());
+      this.mesaSrv.ocupar(this.mesa.id, this.personas(), this.garzon.trim() || undefined);
     }
     this.modalCtrl.dismiss().then(()=> {
       this.router.navigate(['/productos'], { queryParams:{ mesaId:this.mesa.id }});

@@ -12,12 +12,12 @@
 /* ---------- HEADER DE LA APLICACION ---------- */
   
 .header {
-    padding-left: 90px;
+    padding-left: 60px;
 }
   
 /* ---------- CONTENIDO DE LA APLICACION ---------- */
   
-.products-content {
+.pay-content {
     --background: var(--app-bg);
     display: flex;
     flex-direction: column;
@@ -25,14 +25,10 @@
     justify-content: center;
     padding: 0 16px;
 }
-
-.products-content ion-list {
-    --background: transparent;
-}
   
 /* ---------- CUERPO DE LA APLICACION ---------- */
   
-.products-header {
+.pay-header {
     text-align: center;
     margin-bottom: 50px;
   

@@ -21,11 +21,18 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <!-- Botón para agregar una nueva mesa -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="agregarMesa()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <!-- Footer de la Aplicación -->
 <ion-footer class="footer" slot="fixed">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>Copyright © TableMaster 2025.</ion-title>
   </ion-toolbar>
 </ion-footer>

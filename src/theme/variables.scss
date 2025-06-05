@@ -1,2 +1,24 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+:root {
+    /* Backgrounds */
+    --app-bg: #292929;
+    --card-bg: #1b1b1b;
+  
+    /* Ionic palette */
+    --ion-color-primary: #005be4;
+    --ion-color-primary-rgb: 0,102,255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255,255,255;
+  
+    --ion-color-success: #00C853;
+    --ion-color-danger: #FF5252;
+    --ion-color-warning: #FFC400;
+  
+    /* Text */
+    --text-main:#E0E0E0;
+    --text-sub:#8C9EFF;
+  
+    /* Accent */
+    --accent:#00E5FF;
+}

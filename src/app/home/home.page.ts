@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ModalController, ActionSheetController } from '@ionic/angular';
+import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { MesaService, Mesa } from '../services/mesa.service';
 import { MesaDetailComponent } from '../components/mesa-detalle.component';
 import { Router } from '@angular/router';
@@ -15,10 +15,10 @@ export class HomePage {
   private sheetCtrl = inject(ActionSheetController);
   private mesaSrv = inject(MesaService);
   private router = inject(Router);
+  private alertCtrl = inject(AlertController);
 
   mesas$ = this.mesaSrv.getMesas();
 
-  /* ───── Tap en cualquier mesa ───── */
   async abrirMesa(mesa: Mesa) {
     switch (mesa.estado) {
       case 'libre':
@@ -39,9 +39,21 @@ export class HomePage {
     const s = await this.sheetCtrl.create({
       header: `Mesa ${mesa.numero}`,
       buttons: [
-        { text: 'Reservar', icon: 'bookmark', handler: () => this.mesaSrv.reservar(mesa.id) },
-        { text: 'Ocupar',   icon: 'people',   handler: () => this.abrirModalOcupar(mesa) },
-        { text: 'Cancelar', role: 'cancel' },
+        { 
+          text: 'Reservar',
+          icon: 'bookmark',
+          handler: () => this.mesaSrv.reservar(mesa.id)
+        },
+        { 
+          text: 'Ocupar',
+          icon: 'people',
+          handler: () => this.abrirModalOcupar(mesa)
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          icon: 'close',
+        },
       ],
     });
     await s.present();
@@ -51,9 +63,22 @@ export class HomePage {
     const s = await this.sheetCtrl.create({
       header: `Mesa ${mesa.numero} (reservada)`,
       buttons: [
-        { text: 'Ocupar',  icon: 'people',           handler: () => this.abrirModalOcupar(mesa) },
-        { text: 'Liberar', icon: 'checkmark-circle', role: 'destructive', handler: () => this.mesaSrv.liberar(mesa.id) },
-        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Ocupar',
+          icon: 'people',
+          handler: () => this.abrirModalOcupar(mesa)
+        },
+        {
+          text: 'Liberar',
+          icon: 'checkmark-circle',
+          role: 'destructive',
+          handler: () => this.mesaSrv.liberar(mesa.id)
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          icon: 'close',
+        },
       ],
     });
     await s.present();
@@ -61,9 +86,10 @@ export class HomePage {
 
   private async sheetParaOcupada(mesa: Mesa) {
     const clientes = mesa.ocupantes;
+    const garzon = mesa.garzon ? `\nGarzón: ${mesa.garzon}` : '';
     const s = await this.sheetCtrl.create({
       header: `Mesa ${mesa.numero} (ocupada)`,
-      subHeader: `Ocupada por ${clientes} ${clientes === 1 ? 'cliente' : 'clientes'}`,
+      subHeader: `Ocupada por ${clientes} ${clientes === 1 ? 'cliente' : 'clientes'}${garzon}`,
       buttons: [
         {
           text: 'Ver pedido',
@@ -84,12 +110,26 @@ export class HomePage {
           ),
         },
         {
+          text: 'Pagar',
+          icon: 'cash',
+          handler: async () => {
+            await s.dismiss();
+            this.router.navigate(['/pago'], {
+              queryParams: { mesaId: mesa.id }
+            });
+          },
+        },
+        {
           text: 'Liberar mesa',
           icon: 'checkmark-circle',
           role: 'destructive',
           handler: () => this.mesaSrv.liberar(mesa.id),
         },
-        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          icon: 'close',
+        },
       ],
     });
     await s.present();
@@ -101,5 +141,23 @@ export class HomePage {
       componentProps: { mesa },
     });
     await modal.present();
+  }
+
+  async agregarMesa() {
+    const alert = await this.alertCtrl.create({
+      header: 'Nueva mesa',
+      message: '¿Deseas agregar una nueva mesa libre?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Agregar',
+          handler: () => this.mesaSrv.addMesa(),   // capacidad por defecto = 6
+        },
+      ],
+    });
+    await alert.present();
   }
 }
