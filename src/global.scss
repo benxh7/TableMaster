@@ -71,3 +71,8 @@ ion-content.pay-content::part(scroll) {
     background-position: center center;
     background-size: 280px;
 }
+
+.translucid {
+    --background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+}

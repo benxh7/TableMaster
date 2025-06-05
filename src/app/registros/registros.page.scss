@@ -6,7 +6,7 @@
   
 /* ---------- CONTENIDO DE LA APLICACION ---------- */
   
-.products-content {
+.record-content {
     --background: var(--app-bg);
     display: flex;
     flex-direction: column;
@@ -15,13 +15,13 @@
     padding: 0 16px;
 }
 
-.products-content ion-list {
+.record-content ion-list {
     --background: transparent;
 }
   
 /* ---------- CUERPO DE LA APLICACION ---------- */
-  
-.products-header {
+
+.record-header {
     text-align: center;
     margin-bottom: 50px;
   

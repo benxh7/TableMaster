@@ -24,11 +24,7 @@
           </p>
         </ion-label>
 
-        <ion-button *ngIf="mesaId"
-            slot="end"
-            fill="clear"
-            size="small"
-            (click)="onSelect(p); $event.stopPropagation();">
+        <ion-button *ngIf="mesaId" slot="end" fill="clear" size="default" (click)="onSelect(p); $event.stopPropagation();">
           <ion-icon name="add-circle"></ion-icon>
         </ion-button>
 

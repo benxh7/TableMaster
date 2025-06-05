@@ -92,6 +92,11 @@ export class HomePage {
       subHeader: `Ocupada por ${clientes} ${clientes === 1 ? 'cliente' : 'clientes'}${garzon}`,
       buttons: [
         {
+          text: mesa.garzon ? 'Cambiar garzón' : 'Asignar garzón',
+          icon: 'person-add',
+          handler: () => this.asignarGarzon(mesa),
+        },
+        {
           text: 'Ver pedido',
           icon: 'receipt',
           handler: async () => {
@@ -154,7 +159,30 @@ export class HomePage {
         },
         {
           text: 'Agregar',
-          handler: () => this.mesaSrv.addMesa(),   // capacidad por defecto = 6
+          handler: () => this.mesaSrv.addMesa(),
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async asignarGarzon(mesa: Mesa) {
+    const alert = await this.alertCtrl.create({
+      header: `Garzón – Mesa ${mesa.numero}`,
+      inputs: [
+        {
+          name: 'garzon',
+          type: 'text',
+          placeholder: 'Nombre del garzón',
+          value: mesa.garzon ?? '',
+        },
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Guardar',
+          handler: ({ garzon }) =>
+            this.mesaSrv.ocupar(mesa.id, mesa.ocupantes, garzon.trim() || undefined),
         },
       ],
     });
