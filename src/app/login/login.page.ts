@@ -11,6 +11,10 @@ import { Router, NavigationExtras } from '@angular/router';
 
 export class LoginPage {
 
+  /**
+   * Este es el formulario de inicio de sesion
+   * que contiene los campos de usuario y contraseña.
+   */
   loginForm = this.fb.group({
     user: [
       '',
@@ -30,6 +34,11 @@ export class LoginPage {
 
   constructor(private fb: FormBuilder, private router: Router) { }
 
+  /**
+   * Esta funcion se encarga de validar el formulario
+   * y si es valido, redirige al usuario a la pagina
+   * de inicio de la aplicacion.
+   */
   onSubmit() {
     if (this.loginForm.valid) {
       const extras: NavigationExtras = {

@@ -19,6 +19,13 @@ export class HistorialService {
   private registros$ = new BehaviorSubject<Registro[]>([]);
   list$ = this.registros$.asObservable();
 
+  /**
+   * Aqui vamos a añadir registros de ejemplo
+   * ya que en esta actividad aun no aprendemos
+   * conectar la aplicacion con una base de datos
+   * para el correcto almacenamiento de los registros.
+   * @param reg 
+   */
   add(reg: Registro) {
     this.registros$.next([reg, ...this.registros$.value]);
   }

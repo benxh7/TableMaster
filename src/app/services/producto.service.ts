@@ -39,16 +39,33 @@ export class ProductoService {
     this.productos$.next([...this.productos$.value, nuevo]);
   }
 
+  /**
+   * aqui vamos a actualizar los productos
+   * que ya tenemos creados, por ejemplo si
+   * un producto cambia de precio
+   * o si cambia su stock, o si es ilimitado o no.
+   * @param id 
+   * @param cambios 
+   */
   update(id: string, cambios: Partial<Producto>) {
     this.productos$.next(
       this.productos$.value.map(p => (p.id === id ? { ...p, ...cambios } : p))
     );
   }
 
+  /**
+   * Con esto vamos a eliminar un producto
+   * de nuestra lista de productos.
+   * @param id 
+   */
   remove(id: string) {
     this.productos$.next(this.productos$.value.filter(p => p.id !== id));
   }
 
+  /**
+   * Con esto vamos a obtener todos los productos
+   * que tenemos en nuestra lista de productos.
+   */
   getById(id: string) {
     return this.productos$.value.find(p => p.id === id);
   }

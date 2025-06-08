@@ -31,8 +31,23 @@ export class PagoPage implements OnInit {
     this.propinaCtrl.valueChanges.subscribe(() => this.calcTotal());
   }
 
+  /**
+   * Aqui vamos a calcular el subtotal
+   * de cada item del pedido, multiplicando
+   * la cantidad del producto por su precio.
+   * @param it 
+   * @returns 
+   */
   subtotal(it: PedidoItem) { return it.cantidad * it.producto.precio; }
 
+  /**
+   * Con esto vamos a calcular el total de la mesa
+   * sumando el subtotal de cada item del pedido.
+   * 
+   * Adicionalmente calculamos el total con propina
+   * que es el total de la mesa mas un porcentaje
+   * que se ingresa en un campo de texto.
+   */
   calcTotal() {
     this.total = this.mesa.items.reduce((s, it) => s + this.subtotal(it), 0);
     const p = Number(this.propinaCtrl.value) || 0;

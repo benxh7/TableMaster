@@ -41,6 +41,13 @@ export class ProductosPage implements OnInit {
     await m.present();
   }
 
+  /**
+   * Esta funcion nos permite editar un producto
+   * del menu del restaurante, lo que le permite
+   * al garzon modificar los detalles del producto
+   * como el nombre, precio y descripcion.
+   * @param p 
+   */
   async editar(p: Producto) {
     const m = await this.modal.create({
       component: ProductoFormComponent,
@@ -49,6 +56,13 @@ export class ProductosPage implements OnInit {
     await m.present();
   }
 
+  /**
+   * Esta funcion nos permite eliminar un producto
+   * del menu del restaurante, lo que le permite
+   * al garzon eliminar productos que ya no se ofrecen
+   * o que estan obsoletos.
+   * @param p 
+   */
   async eliminar(p: Producto) {
     const a = await this.alert.create({
       header: 'Eliminar',
@@ -65,17 +79,29 @@ export class ProductosPage implements OnInit {
     await a.present();
   }
 
-  /* ---------- SELECCIÓN en modo catálogo / pedido ---------- */
+  /**
+   * Esta funcion se encarga de seleccionar un producto
+   * del menu del restaurante, si estamos en la vista
+   * de productos como pedido, se agrega el producto
+   * a la mesa, si estamos en la vista de productos
+   * como administrador, se edita el producto.
+   * @param p 
+   */
   async onSelect(p: Producto) {
-    if (this.mesaId) { // Aqui tenemos la vista de productos como pedido
+    if (this.mesaId) {
       this.mesaSrv.añadirProducto(this.mesaId, p);
       await this.toast('Producto agregado');
-    } else { // Y aqui tenemos la vista de productos como administrador
+    } else {
       this.editar(p);
     }
   }
 
-  /* helper toast */
+  /**
+   * Toast para mostrar mensajes al usuario
+   * como confirmaciones de acciones realizadas
+   * o errores que puedan ocurrir.
+   * @param msg 
+   */
   private async toast(msg: string) {
     const t = await this.toastCtrl.create({ message: msg, duration: 1200, position: 'bottom' });
     t.present();
@@ -84,7 +110,7 @@ export class ProductosPage implements OnInit {
   /**
    * Lleva al garzon de vuelta al menu donde puede gestionar las mesas
    */
-    volverAMesa() {
+  volverAMesa() {
     if (this.mesaId) {
       this.router.navigate(
         ['/home'],
@@ -93,7 +119,6 @@ export class ProductosPage implements OnInit {
     }
   }
 
-  /* ejemplo opcional: ir a una página de pedido */
   irAPedido() {
     if (this.mesaId) {
       this.router.navigate(['/pedido'], { queryParams: { mesaId: this.mesaId } });

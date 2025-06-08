@@ -48,6 +48,7 @@ import { Producto, ProductoService } from '../services/producto.service';
   `,
 })
 export class ProductoFormComponent {
+  
     private fb = inject(FormBuilder);
     private modal = inject(ModalController);
     private toast = inject(ToastController);
@@ -70,6 +71,11 @@ export class ProductoFormComponent {
         if (this.producto) this.form.patchValue(this.producto);
     }
 
+    /**
+     * Esta funcion se encarga de guardar los cambios
+     * que se hayan realizado en el formulario, ya sea
+     * para crear un nuevo producto o para editar uno existente.
+     */
     async save() {
         const { nombre, precio, stock, ilimitado } = this.form.value as any;
       

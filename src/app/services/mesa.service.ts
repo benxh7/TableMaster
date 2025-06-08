@@ -88,6 +88,12 @@ export class MesaService {
     });
   }
 
+  /**
+   * Actualiza la cantidad de un producto
+   * en la mesa, si la cantidad es 0 lo elimina
+   * @param id 
+   * @param cambios 
+   */
   private actualizar(id: string, cambios: Partial<Mesa> | ((m: Mesa) => Partial<Mesa>)) {
     this.mesas$.next(
       this.mesas$.value.map(m => {
@@ -99,6 +105,13 @@ export class MesaService {
     );
   }
 
+  /**
+   * Inicializa las mesas con un numero determinado
+   * de mesas, cada una con un id unico y un numero
+   * de mesa que va desde 1 hasta n.
+   * 
+   * @param n Numero de mesas a inicializar
+   */
   private iniciales(n: number): Mesa[] {
     return Array.from({ length: n }, (_, i) => ({
       id: crypto.randomUUID(),

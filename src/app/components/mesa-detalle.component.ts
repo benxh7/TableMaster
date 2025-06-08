@@ -113,11 +113,13 @@ export class MesaDetailComponent {
   personas = signal(1);
   garzon = '';
 
-  /* Helpers */
   close() { this.modalCtrl.dismiss(); }
   add(n:number){ this.personas.update(p=>p+n); }
 
-  /* ───────── ACCIONES ───────── */
+  /**
+   * Esta funcion se encarga de ocupar una mesa
+   * con la cantidad de personas y el nombre del garzón.
+   */
   ocuparSolo(){
     if (this.mesa.estado !== 'ocupada') {
       this.mesaSrv.ocupar(this.mesa.id, this.personas(), this.garzon.trim() || undefined);
@@ -125,6 +127,12 @@ export class MesaDetailComponent {
     this.modalCtrl.dismiss();
   }
 
+  /**
+   * Esta funcion se encarga de ocupar una mesa
+   * y redirigir a la pantalla de productos
+   * para agregar productos al pedido.
+   * Si la mesa ya está ocupada, no hace nada.
+   */
   ocuparYAgregar(){
     if (this.mesa.estado !== 'ocupada') {
       this.mesaSrv.ocupar(this.mesa.id, this.personas(), this.garzon.trim() || undefined);
@@ -134,18 +142,32 @@ export class MesaDetailComponent {
     });
   }
 
+  /**
+   * Esta funcion se encarga de reservar una mesa
+   * y mostrar un mensaje de confirmación.
+   */
   reservar(){
     this.mesaSrv.reservar(this.mesa.id);
     this.toast('Mesa reservada');
     this.modalCtrl.dismiss();
   }
 
+  /**
+   * Esta funcion se encarga de liberar una mesa
+   * y mostrar un mensaje de confirmación.
+   */
   liberar(){
     this.mesaSrv.liberar(this.mesa.id);
     this.toast('Mesa liberada');
     this.modalCtrl.dismiss();
   }
 
+  /**
+   * Toast para mostrar mensajes al usuario
+   * como confirmaciones de acciones realizadas
+   * o errores que puedan ocurrir.
+   * @param msg 
+   */
   private async toast(msg:string){
     const t = await this.toastCtrl.create({ message: msg, duration:1500, position:'bottom' });
     t.present();

@@ -25,10 +25,23 @@ export class PedidoPage implements OnInit {
     this.calculoTotal();
   }
 
+  /**
+   * Aqui vamos a calcular el subtotal
+   * de cada item del pedido, multiplicando
+   * la cantidad del producto por su precio.
+   * @param it 
+   * @returns 
+   */
   subtotal(it: PedidoItem) {
     return it.cantidad * it.producto.precio;
   }
 
+  /**
+   * Con esto vamos a eliminar un item del pedido
+   * de la mesa, si el item tiene una cantidad mayor
+   * a 1, simplemente se le resta 1, si es 1, se elimina.
+   * @param it 
+   */
   calculoTotal() {
     this.total = this.mesa.items.reduce(
       (s, it) => s + this.subtotal(it),
