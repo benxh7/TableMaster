@@ -1,0 +1,56 @@
+<!-- Header de la Aplicación -->
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="header">TableMaster</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Contenido de la aplicacion -->
+<ion-content class="login-content">
+  <!-- Cabeza de la pagina Login -->
+  <div class="login-header">
+    <h1>Inicia Sesión</h1>
+    <h2>Para acceder a todas nuestros beneficios</h2>
+  </div>
+
+  <!-- Tarjeta de inico de sesión del usuario -->
+  <ion-card class="login-card">
+    <h3>¡Bienvenido!</h3>
+
+    <!-- Formulario para el ingreso de datos en Login -->
+    <form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
+
+      <!-- Nombre de Usuario -->
+      <ion-item>
+        <ion-label position="floating">Correo</ion-label>
+        <ion-input formControlName="correo" type="email"></ion-input>
+      </ion-item>
+        <ion-note *ngIf="formLogin.get('correo')?.hasError('email') && formLogin.get('correo')?.touched" color="danger">
+        Correo inválido.
+      </ion-note>
+      
+      <!-- Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input formControlName="contrasena" type="password"></ion-input>
+      </ion-item>
+
+      <!-- Boton de Entrar -->
+      <ion-button expand="block" type="submit" [disabled]="formLogin.invalid" class="ion-margin-top">
+        Entrar
+      </ion-button>
+    </form>
+  </ion-card>
+
+  <!-- Link de registro debajo del card -->
+  <div class="register-link">
+    <a routerLink="/register">¿No tienes cuenta? Regístrate</a>
+  </div>
+</ion-content>
+
+<!-- Footer de la Aplicación -->
+<ion-footer class="footer" slot="fixed">
+  <ion-toolbar color="primary">
+    <ion-title>Copyright © TableMaster 2025.</ion-title>
+  </ion-toolbar>
+</ion-footer>

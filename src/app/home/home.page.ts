@@ -1,13 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { MesaService, Mesa } from '../services/mesa.service';
 import { MesaDetailComponent } from '../components/mesa-detalle.component';
 import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Device } from '@capacitor/device';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class HomePage {
@@ -18,7 +22,20 @@ export class HomePage {
   private router = inject(Router);
   private alertCtrl = inject(AlertController);
 
-  mesas$ = this.mesaSrv.getMesas();
+  mesas$ = this.mesaSrv.obtenerMesas();
+
+  mesaId = (_: number, m: Mesa) => m.id;
+  constructor(private cd: ChangeDetectorRef) { }
+
+  ngOnInit() {
+    Device.getBatteryInfo().then(b => console.log('🔋 Bateria', b));
+    // Sólo en navegadores con la API disponible
+    // @ts-ignore
+    if (performance.memory) {
+      // @ts-ignore
+      console.log('💾 JS heap', (performance.memory.usedJSHeapSize/1e6).toFixed(1), 'MB');
+    }
+  }
 
   /**
    * Esta funcion se encarga de abrir un action sheet
@@ -127,6 +144,14 @@ export class HomePage {
           handler: () => this.asignarGarzon(mesa),
         },
         {
+          text: 'Agregar Productos',
+          icon: 'add',
+          handler: () => this.router.navigate(
+            ['/productos'],
+            { queryParams: { mesaId: mesa.id } }
+          ),
+        },
+        {
           text: 'Ver pedido',
           icon: 'receipt',
           handler: async () => {
@@ -135,14 +160,6 @@ export class HomePage {
               queryParams: { mesaId: mesa.id }
             });
           },
-        },
-        {
-          text: 'Agregar Productos',
-          icon: 'add',
-          handler: () => this.router.navigate(
-            ['/productos'],
-            { queryParams: { mesaId: mesa.id } }
-          ),
         },
         {
           text: 'Pagar',
@@ -200,7 +217,7 @@ export class HomePage {
         },
         {
           text: 'Agregar',
-          handler: () => this.mesaSrv.addMesa(),
+          handler: () => this.mesaSrv.añadirMesa(),
         },
       ],
     });
@@ -234,5 +251,21 @@ export class HomePage {
       ],
     });
     await alert.present();
+  }
+
+
+  /**
+   * Esta funcion se encarga de refrescar la lista de mesas
+   * al hacer pull-to-refresh, recargando los datos desde el servidor.
+   * @param ev 
+   */
+  refrescar(ev: CustomEvent) {
+    const refresher = ev.target as HTMLIonRefresherElement;
+
+    this.mesaSrv.recargar();
+    this.mesaSrv.obtenerMesas().pipe(take(1)).subscribe(() => {
+      refresher.complete();
+      Haptics.impact({ style: ImpactStyle.Medium });
+    });
   }
 }

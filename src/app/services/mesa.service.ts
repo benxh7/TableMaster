@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Producto } from '../services/producto.service';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, merge, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Producto } from './producto.service';
+import { Registro } from '../models/registro.model';
 
-/**
- * La interfaz PedidoItem representa un item
- * dentro de un pedido, que contiene un producto
- * y la cantidad de este producto que se ha solicitado
- * 
- * Esto nos permite el agregar productos a las mesas
- * para luego poder llevar una cuenta y al final poder
- * facilitar el calculo y pago de los clientes.
- */
 export interface PedidoItem {
-  producto: Producto;
+  id: number;
+  producto_id: number;
   cantidad: number;
+  producto: Producto;
 }
 
 /**
@@ -26,100 +22,96 @@ export interface PedidoItem {
  * el consumo que tienen los clientes de la mesa.
  */
 export interface Mesa {
-  id: string;
+  id: number;
   numero: number;
   capacidad: number;
   ocupantes: number;
   estado: 'libre' | 'reservada' | 'ocupada';
-  items: PedidoItem[];
   garzon?: string;
-
+  items: PedidoItem[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class MesaService {
-  private mesas$ = new BehaviorSubject<Mesa[]>(this.iniciales(6));
+
+  private apiUrl = `${environment.apiUrl}/mesas`;
+  private reload$ = new BehaviorSubject<void>(undefined);
+
+  constructor(private http: HttpClient) { }
 
   /**
-   * Getters para obtener las mesas
-   * y una mesa en particular por su id.
+   * Devuelve un observable de la lista de mesas,
+   * recargado automáticamente al invocar acciones.
    */
-  getMesas() { return this.mesas$.asObservable(); }
-  getMesa(id: string) { return this.mesas$.value.find(m => m.id === id)!; }
-  addMesa(capacidad = 6) {
-    const lista = this.mesas$.value;
-    const nueva: Mesa = {
-      id: crypto.randomUUID(),
-      numero: lista.length + 1,
-      capacidad,
-      ocupantes: 0,
-      estado: 'libre',
-      items: [],
-    };
-    this.mesas$.next([...lista, nueva]);
+  obtenerMesas(): Observable<Mesa[]> {
+    return merge(
+      this.http.get<Mesa[]>(this.apiUrl),
+      this.reload$.pipe(switchMap(() => this.http.get<Mesa[]>(this.apiUrl)))
+    );
+  }
+
+  /** 
+   * Obtenemos una mesa individual con sus items
+   */
+  obtenerMesa(id: number): Observable<Mesa> {
+    return this.http.get<Mesa>(`${this.apiUrl}/${id}`);
   }
 
   /**
-   * Con esto gestionamos el estado de las mesas
-   * para saber si estan reservadas, ocupadas o libres.
+   * Crea una nueva mesa con la capacidad indicada (por defecto 6).
    */
-  reservar(id: string) { this.actualizar(id, { estado: 'reservada' }); }
-  ocupar(id: string, personas: number, garzon?: string) {
-    this.actualizar(id, { estado: 'ocupada', ocupantes: personas, garzon });
+  añadirMesa(capacidad = 6): void {
+    this.http.post<Mesa>(this.apiUrl, { capacidad })
+      .subscribe(() => this.recargar());
   }
-  liberar(id: string) { this.actualizar(id, { estado: 'libre', ocupantes: 0 }); }
 
-  /**
-   * Carrito de pedidos para la mesa
-   * con esto vamos a poder agregar productos
-   * a la mesa y llevar un control de los pedidos
-   * @param id 
-   * @param cambios 
+  /** 
+   * Agregamos un producto a la mesa mediante FastAPI
    */
-  añadirProducto(mesaId: string, producto: Producto) {
-    this.actualizar(mesaId, mesa => {
-      const idx = mesa.items.findIndex(i => i.producto.id === producto.id);
-      if (idx > -1) {
-        mesa.items[idx].cantidad += 1;
-      } else {
-        mesa.items.push({ producto, cantidad: 1 });
-      }
-      return { items: [...mesa.items] };
-    });
+  añadirProducto(mesaId: number, productoId: number, cantidad = 1): void {
+    this.http.post<Mesa>(`${this.apiUrl}/${mesaId}/items`,{ producto_id: productoId, cantidad }).subscribe(() => this.recargar());
   }
 
   /**
-   * Actualiza la cantidad de un producto
-   * en la mesa, si la cantidad es 0 lo elimina
-   * @param id 
-   * @param cambios 
+   * Reservamos la mesa estableciendo su estado a "reservada".
    */
-  private actualizar(id: string, cambios: Partial<Mesa> | ((m: Mesa) => Partial<Mesa>)) {
-    this.mesas$.next(
-      this.mesas$.value.map(m => {
-        if (m.id !== id) return m;
+  reservar(id: number): void {
+    this.http.put<Mesa>(`${this.apiUrl}/${id}/reservar`, {})
+      .subscribe(() => this.recargar());
+  }
+  
+  /**
+   * Ocupamos la mesa con el numero de ocupantes y opcionalmente un garzon.
+   */
+  ocupar(id: number, ocupantes: number, garzon?: string): void {
+    this.http.put<Mesa>(
+      `${this.apiUrl}/${id}/ocupar`,
+      { ocupantes, garzon }
+    ).subscribe(() => this.recargar());
+  }
 
-        const patch = (typeof cambios === 'function') ? cambios({ ...m }) : cambios;
-        return { ...m, ...patch };
-      })
+  /**
+   * Liberamos la mesa devolviendola al estado "libre".
+   */
+  liberar(id: number): void {
+    this.http.put<Mesa>(`${this.apiUrl}/${id}/liberar`, {})
+      .subscribe(() => this.recargar());
+  }
+
+  /** 
+   * Cobramos la mesa y registramos el pago en un unico metodo POST
+   */
+  cobrarMesa(mesaId: number, propina: number, usuarioId: number) {
+    return this.http.post<Registro>(
+      `${this.apiUrl}/${mesaId}/cobrar`,
+      { propina, usuario_id: usuarioId }
     );
   }
 
   /**
-   * Inicializa las mesas con un numero determinado
-   * de mesas, cada una con un id unico y un numero
-   * de mesa que va desde 1 hasta n.
-   * 
-   * @param n Numero de mesas a inicializar
+   * Recargamos los datos para actualizar la lista de mesas.
    */
-  private iniciales(n: number): Mesa[] {
-    return Array.from({ length: n }, (_, i) => ({
-      id: crypto.randomUUID(),
-      numero: i + 1,
-      capacidad: 6,
-      ocupantes: 0,
-      estado: 'libre' as const,
-      items: [],
-    }));
+  recargar(): void {
+    this.reload$.next();
   }
 }

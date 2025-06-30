@@ -1,4 +1,4 @@
-import { Component, inject, signal, Input } from '@angular/core';
+import { Component, inject, signal, Input, ChangeDetectionStrategy } from '@angular/core';
 import { IonicModule, ModalController, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';  
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-mesa-detail',
   imports: [IonicModule, CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ion-header translucent>
       <ion-toolbar>
@@ -104,6 +105,7 @@ import { Router } from '@angular/router';
   `]
 })
 export class MesaDetailComponent {
+  
   private modalCtrl = inject(ModalController);
   private mesaSrv = inject(MesaService);
   private router = inject(Router);

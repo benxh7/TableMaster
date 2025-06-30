@@ -11,9 +11,14 @@
 
 <!-- Contenido de la aplicacion -->
 <ion-content class="home-content" fullscreen>
+
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-grid>
     <ion-row>
-      <ion-col size="4" size-sm="3" *ngFor="let mesa of (mesas$ | async)">
+      <ion-col size="4" size-sm="3" *ngFor="let mesa of (mesas$ | async); trackBy: mesaId">
         <div  #mesaCard class="mesa-card" [ngClass]="mesa.estado" [attr.data-id]="mesa.id" (click)="abrirMesa(mesa)">
           <ion-icon name="restaurant" class="mesa-icon"></ion-icon>
           <span class="mesa-num">{{ mesa.numero }}</span>
