@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MesaService, Mesa, PedidoItem } from '../../services/mesa.service';
+import { Registro } from '../../models/registro.model';
 import { map, switchMap, shareReplay, combineLatest, startWith } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-pago',
@@ -45,6 +47,7 @@ export class PagoPage implements OnInit {
     private mesaSrv: MesaService,
     private route: ActivatedRoute,
     private router: Router,
+    private toast  : ToastController 
   ) { }
 
   ngOnInit() {
@@ -114,16 +117,30 @@ export class PagoPage implements OnInit {
     const usuarioId  = 1;
 
     this.mesaSrv.cobrarMesa(mesa.id, propinaPct, usuarioId).subscribe({
-      next: _reg => {
+      next: (reg: Registro | null) => {
+        if (reg) {
+          this.mostrarToast('Cobro exitoso – total $' + reg.total_final, 'success');
+        } else {
+          this.mostrarToast('Cobro en proceso, se enviara cuando vuelva la red', 'warning');
+        }
+    
+        // logica post cobro
         this.mesaSrv.recargar();
         Haptics.impact({ style: ImpactStyle.Medium });
-
-        Preferences.set({ key: 'propinaDefault', value: '0' });
-        this.propinaCtrl.setValue(0, { emitEvent: false });
-
+        Preferences.set({ key:'propinaDefault', value:'0' });
+        this.propinaCtrl.setValue(0, { emitEvent:false });
         this.router.navigate(['/home'], { queryParams:{ foco: mesa.id }});
       },
-      error: () => alert('No se pudo completar el cobro')
+      error: () => this.mostrarToast('No se pudo completar el cobro', 'danger')
     });
+  }
+
+  private async mostrarToast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
+    const t = await this.toast.create({
+      message,
+      duration: 2000,
+      color
+    });
+    t.present();
   }
 }

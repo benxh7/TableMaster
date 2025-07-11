@@ -6,85 +6,86 @@
 </ion-header>
 
 <ion-content class="login-content" [fullscreen]="true">
+  <div class="login-wrapper">
+    <!-- Cabeza de la pagina Login -->
+    <div class="login-header">
+      <h1>Registrate</h1>
+      <h2>¡Crea una cuenta, para ingresar!</h2>
+    </div>
 
-  <!-- Cabeza de la pagina Login -->
-  <div class="login-header">
-    <h1>Registrate</h1>
-    <h2>¡Crea una cuenta, para ingresar!</h2>
-  </div>
-
-  <ion-card class="login-card">
-    <form [formGroup]="formRegistro" (ngSubmit)="onSubmit()">
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="nombre" type="text"></ion-input>
-      </ion-item>
-      <ion-note
-        *ngIf="
-          formRegistro.get('nombre')?.hasError('required') &&
-          formRegistro.get('nombre')?.touched
-        "
-        color="danger"
-        >El nombre es obligatorio.</ion-note
-      >
-
-      <ion-item>
-        <ion-label position="floating">Correo</ion-label>
-        <ion-input
-          formControlName="correo"
-          type="email"
-        ></ion-input>
-      </ion-item>
-      <ion-note
-        *ngIf="
-          formRegistro.get('correo')?.hasError('email') &&
-          formRegistro.get('correo')?.touched
-        "
-        color="danger"
-        >Correo inválido.</ion-note
-      >
-
-      <ion-item>
-        <ion-label position="floating"
-          >Contraseña</ion-label
+    <ion-card class="login-card">
+      <form [formGroup]="formRegistro" (ngSubmit)="onSubmit()">
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input formControlName="nombre" type="text"></ion-input>
+        </ion-item>
+        <ion-note
+          *ngIf="
+            formRegistro.get('nombre')?.hasError('required') &&
+            formRegistro.get('nombre')?.touched
+          "
+          color="danger"
+          >El nombre es obligatorio.</ion-note
         >
-        <ion-input
-          formControlName="contrasena"
-          type="password"
-        ></ion-input>
-      </ion-item>
 
-      <ion-item>
-        <ion-label position="floating"
-          >Confirmar contraseña</ion-label
+        <ion-item>
+          <ion-label position="floating">Correo</ion-label>
+          <ion-input
+            formControlName="correo"
+            type="email"
+          ></ion-input>
+        </ion-item>
+        <ion-note
+          *ngIf="
+            formRegistro.get('correo')?.hasError('email') &&
+            formRegistro.get('correo')?.touched
+          "
+          color="danger"
+          >Correo inválido.</ion-note
         >
-        <ion-input
-          formControlName="confirmar"
-          type="password"
-        ></ion-input>
-      </ion-item>
-      <ion-note
-        *ngIf="
-          formRegistro.hasError('noCoinciden') &&
-          formRegistro.get('confirmar')?.touched
-        "
-        color="danger"
-        >Las contraseñas no coinciden.</ion-note
-      >
 
-      <ion-button
-        expand="block"
-        type="submit"
-        [disabled]="formRegistro.invalid"
-        class="ion-margin-top"
-      >
-        Registrarme
-      </ion-button>
-    </form>
-  </ion-card>
+        <ion-item>
+          <ion-label position="floating"
+            >Contraseña</ion-label
+          >
+          <ion-input
+            formControlName="contrasena"
+            type="password"
+          ></ion-input>
+        </ion-item>
 
-  <div class="register-link">
-    <a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+        <ion-item>
+          <ion-label position="floating"
+            >Confirmar contraseña</ion-label
+          >
+          <ion-input
+            formControlName="confirmar"
+            type="password"
+          ></ion-input>
+        </ion-item>
+        <ion-note
+          *ngIf="
+            formRegistro.hasError('noCoinciden') &&
+            formRegistro.get('confirmar')?.touched
+          "
+          color="danger"
+          >Las contraseñas no coinciden.</ion-note
+        >
+
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="formRegistro.invalid"
+          class="ion-margin-top"
+        >
+          Registrarme
+        </ion-button>
+      </form>
+    </ion-card>
+
+    <div class="register-link">
+      <a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+    </div>
   </div>
 </ion-content>
 

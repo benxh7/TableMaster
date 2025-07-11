@@ -14,6 +14,16 @@
     justify-content: center;
     padding: 0 16px;
 }
+
+.login-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 340px;
+    padding: 0 5px;
+}
   
 /* ---------- CUERPO DE LA APLICACION ---------- */
 

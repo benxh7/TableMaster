@@ -48,12 +48,12 @@ export class LoginPage implements OnInit {
         await loader.dismiss();
         await this.auth.guardarUsuario(usuario);
         const toast = await this.toastCtrl.create({
-          message: `¡Bienvenido, ${usuario.nombre}!`,
+          message: `¡Bienvenido!`,
           duration: 2000,
           color: 'success',
         });
         await toast.present();
-        this.navCtrl.navigateRoot('/home'); // o la ruta principal
+        this.navCtrl.navigateRoot('/home');
       },
       error: async (err) => {
         await loader.dismiss();

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="dev.benja.tablemaster" version="1.1.0"
+        xmlns="http://www.w3.org/ns/widgets"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>TableMaster</name>
+  <description>Gestión de mesas y pedidos para restaurantes.</description>
+  <author email="banjaminmorales571@gmail.com" href="">
+    Benjamin Morales
+  </author>
+  <content src="index.html"/>
+  <preference name="SplashScreen" value="screen"/>
+  <preference name="Orientation" value="portrait"/>
+</widget>

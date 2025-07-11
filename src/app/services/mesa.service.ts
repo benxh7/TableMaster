@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, merge, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, merge, switchMap, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Producto } from './producto.service';
 import { Registro } from '../models/registro.model';
+import { OfflineQueueService } from './servicio-offline.service';
+import { HistoricoService } from './historico.service';
+import { ToastController } from '@ionic/angular';
 
 export interface PedidoItem {
   id: number;
@@ -37,7 +40,12 @@ export class MesaService {
   private apiUrl = `${environment.apiUrl}/mesas`;
   private reload$ = new BehaviorSubject<void>(undefined);
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private queue: OfflineQueueService,
+    private hist: HistoricoService,
+    private toast: ToastController
+  ) { }
 
   /**
    * Devuelve un observable de la lista de mesas,
@@ -69,7 +77,7 @@ export class MesaService {
    * Agregamos un producto a la mesa mediante FastAPI
    */
   añadirProducto(mesaId: number, productoId: number, cantidad = 1): void {
-    this.http.post<Mesa>(`${this.apiUrl}/${mesaId}/items`,{ producto_id: productoId, cantidad }).subscribe(() => this.recargar());
+    this.http.post<Mesa>(`${this.apiUrl}/${mesaId}/items`, { producto_id: productoId, cantidad }).subscribe(() => this.recargar());
   }
 
   /**
@@ -79,7 +87,7 @@ export class MesaService {
     this.http.put<Mesa>(`${this.apiUrl}/${id}/reservar`, {})
       .subscribe(() => this.recargar());
   }
-  
+
   /**
    * Ocupamos la mesa con el numero de ocupantes y opcionalmente un garzon.
    */
@@ -101,11 +109,45 @@ export class MesaService {
   /** 
    * Cobramos la mesa y registramos el pago en un unico metodo POST
    */
-  cobrarMesa(mesaId: number, propina: number, usuarioId: number) {
-    return this.http.post<Registro>(
-      `${this.apiUrl}/${mesaId}/cobrar`,
-      { propina, usuario_id: usuarioId }
-    );
+  cobrarMesa(
+    mesaId: number,
+    propina: number,
+    usuarioId: number
+  ): Observable<Registro | null> {
+
+    const endpoint = `/mesas/${mesaId}/cobrar`;
+    const body = { propina, usuario_id: usuarioId };
+
+    if (navigator.onLine) {
+      return this.http
+        .post<Registro>(`${environment.apiUrl}${endpoint}`, body)
+        .pipe(
+          tap(reg => {
+            this.hist.agregar(reg);
+            this.recargar();
+          })
+        );
+    }
+
+    this.queue.enqueue(endpoint, 'POST', body);
+    this.hist.agregar({
+      id: Date.now(), mesa: mesaId,
+      total: 0, propina, total_final: 0,
+      fecha: new Date().toISOString(),
+      usuario_id: usuarioId, items: []
+    } as any, false);
+
+    this.mostrarToastOffline();
+    this.recargar();
+    return of(null);
+  }
+
+  private async mostrarToastOffline() {
+    const t = await this.toast.create({
+      message: 'Venta guardada offline – se enviará al reconectar',
+      duration: 2000, color: 'warning'
+    });
+    t.present();
   }
 
   /**

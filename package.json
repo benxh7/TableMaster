@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "protractor e2e/protractor.conf.js"
+    "e2e": "npx cypress run --config-file tsconfig.e2e.json"
   },
   "private": true,
   "dependencies": {
@@ -50,10 +50,13 @@
     "@angular/language-service": "^19.0.0",
     "@capacitor/cli": "7.2.0",
     "@ionic/angular-toolkit": "^12.0.0",
+    "@types/chai": "^5.2.2",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
+    "chai": "^5.2.1",
     "chromedriver": "^138.0.1",
+    "cypress": "^14.5.1",
     "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
@@ -62,6 +65,7 @@
     "jasmine-core": "~5.1.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.4.0",
+    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",

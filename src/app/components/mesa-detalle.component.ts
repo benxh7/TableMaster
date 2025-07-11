@@ -57,7 +57,6 @@ import { Router } from '@angular/router';
         Liberar mesa
       </ion-button>
 
-
       <!-- campo nuevo, debajo del selector de personas -->
       <div class="garzon-wrapper">
         <ion-item lines="full">

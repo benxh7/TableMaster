@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "types": ["jasmine", "node"],
-        "moduleResolution": "node",
-        "esModuleInterop": true
-    }
-}

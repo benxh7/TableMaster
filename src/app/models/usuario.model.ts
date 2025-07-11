@@ -10,7 +10,6 @@ export interface UsuarioLogin {
 }
 
 export interface UsuarioRespuesta {
-    id: number;
-    nombre: string;
-    correo: string;
+    token: string;
+    usuario: { id: number; correo: string; nombre: string };
 }

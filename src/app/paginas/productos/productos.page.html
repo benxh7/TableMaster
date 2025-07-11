@@ -53,7 +53,7 @@
 
   <!-- Boton para volver a el menu de la mesa -->
   <ion-fab *ngIf="mesaId" vertical="bottom" horizontal="start" slot="fixed">
-    <ion-fab-button color="medium" (click)="volverAMesa()">
+    <ion-fab-button data-test="volver-mesa" color="medium" (click)="volverAMesa()">
       <ion-icon name="return-down-back"></ion-icon>
     </ion-fab-button>
   </ion-fab>

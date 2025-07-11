@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { UsuarioRegistro, UsuarioRespuesta } from '../models/usuario.model';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 
@@ -36,6 +37,8 @@ export class AuthService {
   login(credenciales: { correo: string; contrasena: string; }) {
     return this.http.post<UsuarioRespuesta>(
       `${this.apiUrl}/login`, credenciales
+    ).pipe(
+      tap(res => localStorage.setItem('token', res.token))
     );
   }
 
@@ -62,8 +65,9 @@ export class AuthService {
    * Este ultimo metodo se encarga de cerrar la sesión del usuario.
    * Elimina el usuario guardado en las preferencias del dispositivo
    */
-  async logout() {
+  async logout(): Promise<void> {
     await Preferences.remove({ key: 'usuario' });
+    localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
 
