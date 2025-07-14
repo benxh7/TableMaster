@@ -24,27 +24,27 @@
     max-width: 340px;
     padding: 0 5px;
 }
-  
+
 /* ---------- CUERPO DE LA APLICACION ---------- */
 
 .login-header {
     text-align: center;
     margin-bottom: 50px;
-  
+
     h1 {
         margin-top: 50px;
         font-size: 2rem;
         font-weight: bold;
         color: var(--text-main);
     }
-  
+
     h2 {
         font-size: 1.0rem;
         font-weight: bold;
         color: var(--text-sub);
     }
 }
-  
+
 /* ---------- CARTA DE DATOS QUE INGRESA EL USUARIO ---------- */
 
 .login-card {
@@ -60,7 +60,7 @@
         color: var(--text-main);
     }
 
-  
+
     form {
         padding: 24px 16px;
 
@@ -70,7 +70,7 @@
         }
     }
 }
-  
+
 /* Inputs con linea completa y espacio entre ellos */
 ion-item {
     --background: transparent;
@@ -82,11 +82,11 @@ ion-item {
 ion-input {
     color: var(--text-main);
 }
-  
+
 ion-label {
     color: var(--text-sub);
 }
-  
+
 /* Boton de ingresar */
 ion-button {
     --background: var(--accent);
@@ -95,16 +95,16 @@ ion-button {
     font-weight: 600;
     margin-top: 8px;
 }
-  
+
 /* Futuro link para registrarse */
 .register-link {
     margin-top: 16px;
     text-align: center;
-  
+
     a {
-      font-size: 0.9rem;
-      color: var(--accent);
-      text-decoration: none;
+        font-size: 0.9rem;
+        color: var(--accent);
+        text-decoration: none;
     }
 }
 

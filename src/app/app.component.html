@@ -1,3 +1,8 @@
+<app-loading-overlay
+  [state]="(loaderState$ | async) ?? 'hidden'"
+  (finished)="loader.hide()">
+</app-loading-overlay>
+
 <ion-app>
   <ion-menu contentId="main-content" side="start" type="overlay">
     <ion-header>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { NavController, ToastController, LoadingController } from '@ionic/angular';
 import { UsuarioRespuesta } from '../../../models/usuario.model';
+import { LoadingService } from '../../../shared/loading.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class LoginPage implements OnInit {
     private auth: AuthService,
     private navCtrl: NavController,
     private toastCtrl: ToastController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private loader: LoadingService
   ) {}
 
   ngOnInit() {
@@ -38,14 +40,16 @@ export class LoginPage implements OnInit {
   async onSubmit() {
     if (this.formLogin.invalid) return;
 
-    const loader = await this.loadingCtrl.create({
+    const ionicLoader  = await this.loadingCtrl.create({
       message: 'Iniciando sesión...',
     });
-    await loader.present();
+    await ionicLoader.present();
+
+    this.loader.show();
 
     this.auth.login(this.formLogin.value).subscribe({
       next: async (usuario: UsuarioRespuesta) => {
-        await loader.dismiss();
+        await ionicLoader.dismiss();
         await this.auth.guardarUsuario(usuario);
         const toast = await this.toastCtrl.create({
           message: `¡Bienvenido!`,
@@ -53,10 +57,13 @@ export class LoginPage implements OnInit {
           color: 'success',
         });
         await toast.present();
+
+        this.loader.open();
         this.navCtrl.navigateRoot('/home');
       },
       error: async (err) => {
-        await loader.dismiss();
+        await ionicLoader.dismiss();
+        this.loader.hide();
         const toast = await this.toastCtrl.create({
           message: err.status === 401 ? 'Credenciales inválidas' : 'Error de conexión',
           duration: 2500,

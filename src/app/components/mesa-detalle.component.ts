@@ -99,7 +99,7 @@ import { Router } from '@angular/router';
     .garzon-input {
       --min-height: 50px;
       font-size: 1rem;
-      color: #fff;
+      color: #000000;
     }
   `]
 })

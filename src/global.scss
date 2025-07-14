@@ -76,3 +76,114 @@ ion-content.pay-content::part(scroll) {
     --background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
 }
+
+/* ---------- PANTALLA DE CARGA ---------- */
+
+.loader-wrapper {
+    --line-width: 5px;
+    --curtain-color: #f1faee;
+    --outer-line-color: #a8dadc;
+    --middle-line-color: #457b9d;
+    --inner-line-color: #1d3557;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--curtain-color);
+    z-index: 9999;
+    overflow: hidden;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+/* Mostrar loader cuando está activo */
+.loader-wrapper.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Círculo giratorio */
+.loader {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: var(--line-width) solid transparent;
+    border-top-color: var(--outer-line-color);
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    z-index: 10001;
+}
+
+.loader:before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: var(--line-width) solid transparent;
+    border-top-color: var(--inner-line-color);
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+}
+
+.loader:after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    border: var(--line-width) solid transparent;
+    border-top-color: var(--middle-line-color);
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Paneles tipo telón */
+.loader-section {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: var(--curtain-color);
+    z-index: 10000;
+    transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+/* Cubren desde el centro */
+.section-left  { right: 50%; transform: translateX(-100%); }
+.section-right { left: 50%;  transform: translateX( 100%);  }
+
+/* Se abren hacia los lados (<< | >>) */
+.loader-wrapper.loaded .section-left  { transform: translateX(-200%); }
+.loader-wrapper.loaded .section-right { transform: translateX( 200%);  }
+
+/* --- Círculo se desvanece apenas empiezan los telones --- */
+.loader-wrapper.loaded .loader { opacity: 0; transition: opacity .3s; }
+
+/* --- Fase final: wrapper sube y se desvanece ---
+   delay: 1.2 s  (cuando terminan los telones)
+   duración: 0.9 s  →  total global ≈ 2.1 s */
+.loader-wrapper.loaded {
+    transform: translateY(-100%);
+    transition: transform 1.5s 1.5s ease-out;
+}

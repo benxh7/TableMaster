@@ -1,3 +1,10 @@
+<!-- Pantalla de carga -->
+<!--<div class="loader-wrapper" [class.visible]="cargando" [class.loaded]="animacionFinalizada">
+  <div class="loader"></div>
+  <div class="loader-section section-left"></div>
+  <div class="loader-section section-right"></div>
+</div>-->
+
 <!-- Header de la Aplicación -->
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
@@ -40,13 +47,13 @@
         <ion-button expand="block" type="submit" [disabled]="formLogin.invalid" class="ion-margin-top">
           Entrar
         </ion-button>
+
+        <!-- Link de registro debajo del card -->
+        <div class="register-link">
+          <a routerLink="/register">¿No tienes cuenta? Regístrate</a>
+        </div>
       </form>
     </ion-card>
-
-    <!-- Link de registro debajo del card -->
-    <div class="register-link">
-      <a routerLink="/register">¿No tienes cuenta? Regístrate</a>
-    </div>
   </div>
 </ion-content>
 
